@@ -27,11 +27,11 @@ Let's start by creating a Foundry project.
 
 1. Ensure the **New Foundry** toggle is set to *On*.
 
-    <img src="../media/new-foundry-toggle.png" alt="Screenshot of the New Foundry toggle" width="200">
+    ![Screenshot of the New Foundry toggle](../media/new-foundry-toggle.png)
 
 1. You may be prompted to create a new project before continuing to the New Foundry experience. Select **Create a new project**.
 
-    <img src="../media/foundry-new-project.png" alt="Screenshot of the Create project pane." width="600">
+    ![Screenshot of the Create project pane](../media/foundry-new-project.png)
 
     If you're not prompted, select the projects drop down menu on the upper left, and then select **Create new project**.
 
