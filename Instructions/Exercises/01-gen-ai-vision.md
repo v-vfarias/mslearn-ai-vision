@@ -53,13 +53,13 @@ You'll need a model that can process image-based input.
 
 1. On the project home page, in the **Start building** menu, select **Browse models** to view the Microsoft Foundry model catalog.
 
-1. Search for and deploy the `gpt-4.1-mini` model using the default settings. Deployment may take a minute or so.
+1. Search for and deploy the `gpt-4.1` model using the default settings. Deployment may take a minute or so.
 
-    > **Tip**: Model deployments are subject to regional quotas. If you don't have enough quota to deploy the model in your project's region, you can use a different model - such as gpt-4.1, or gpt-4o. Alternatively, you can create a new project in a different region.
+    > **Tip**: Model deployments are subject to regional quotas. If you don't have enough quota to deploy the model in your project's region, you can use a different model - such as gpt-4.1-mini, or gpt-4o. Alternatively, you can create a new project in a different region.
 
 1. When the model has been deployed, view the model playground page that is opened, in which you can chat with the model.
 
-    > **TIP**: Note the model deployment name (which by default should be *gpt-4.1-mini*) - you'll need this later!
+    > **TIP**: Note the model deployment name (which by default should be *gpt-4.1*) - you'll need this later!
 
 ## Test the model in the playground
 
@@ -139,7 +139,7 @@ The initial application files you'll need to develop the translation application
 
 1. In the **main** function, under the comment **Get configuration settings**, note that the code loads the project connection string and model deployment name values you defined in the configuration file.
 
-1. Find the comment **ICreate an OpenAI client**, and add the following code to connect to your Azure AI Foundry project:
+1. Find the comment **Create an OpenAI client**, and add the following code to connect to your Azure AI Foundry project:
 
     > **Tip**: Be careful to maintain the correct indentation level for your code.
 
@@ -162,22 +162,17 @@ The initial application files you'll need to develop the translation application
     ```python
    # Get a response to image input
    image_url = "https://microsoftlearning.github.io/mslearn-ai-vision/Labfiles/gen-ai-vision/orange.jpeg"
-   image_format = "jpeg"
-   request = Request(image_url, headers={"User-Agent": "Mozilla/5.0"})
-   image_data = base64.b64encode(urlopen(request).read()).decode("utf-8")
-   data_url = f"data:image/{image_format};base64,{image_data}"
-
-   response = client.chat.completions.create(
+   response = client.responses.create(
         model=model_deployment,
-        messages=[
-            {"role": "system", "content": system_message},
+        input=[
+            {"role": "developer", "content": system_message},
             { "role": "user", "content": [  
-                { "type": "text", "text": prompt},
-                { "type": "image_url", "image_url": {"url": data_url}}
-            ] } 
+                { "type": "input_text", "text": prompt},
+                { "type": "input_image", "image_url": image_url}
+            ]} 
         ]
    )
-   print(response.choices[0].message.content)
+   print(response.output_text)
     ```
 
 1. Save your changes to the code file.
@@ -218,27 +213,24 @@ The initial application files you'll need to develop the translation application
 
     ```python
    # Get a response to image input
-   script_dir = Path(__file__).parent  # Get the directory of the script
-   image_path = script_dir / 'mystery-fruit.jpeg'
-   mime_type = "image/jpeg"
-
-   # Read and encode the image file
+   image_path = Path("mystery-fruit.jpeg")
+   image_format = "jpeg"
    with open(image_path, "rb") as image_file:
-        base64_encoded_data = base64.b64encode(image_file.read()).decode('utf-8')
+        image_data = base64.b64encode(image_file.read()).decode("utf-8")
 
-   # Include the image file data in the prompt
-   data_url = f"data:{mime_type};base64,{base64_encoded_data}"
-   response = client.chat.completions.create(
-            model=model_deployment,
-            messages=[
-                {"role": "system", "content": system_message},
-                { "role": "user", "content": [  
-                    { "type": "text", "text": prompt},
-                    { "type": "image_url", "image_url": {"url": data_url}}
-                ] } 
-            ]
+   data_url = f"data:image/{image_format};base64,{image_data}"
+
+   response = client.responses.create(
+        model=model_deployment,
+        input=[
+            {"role": "developer", "content": system_message},
+            { "role": "user", "content": [  
+                { "type": "input_text", "text": prompt},
+                { "type": "input_image", "image_url": data_url}
+            ]} 
+        ]
    )
-   print(response.choices[0].message.content)
+    print(response.output_text)
     ```
 
 1. Use the **CTRL+S** command to save your changes to the code file.

@@ -63,9 +63,7 @@ You'll need a model that can generate images.
 
 Before creating a client application, let's test the Flux model in the playground.
 
-1. Select **Playgrounds**, and then **Images playground**.
-
-1. Ensure your Flux model deployment is selected. Then, in the box near the bottom of the page, enter a prompt such as `Create an image of an robot eating spaghetti` and select **Generate**.
+1. In the playground, e your Flux model deployment is selected. Then, in the box near the bottom of the page, select the smallest available size and enter a prompt such as `A robot eating spaghetti`.
 
 1. Review the resulting image in the playground:
 

@@ -9,11 +9,11 @@ lab:
 
 # Analyze images with Azure Content Understanding
 
-Azure Content Understanding is a capability available in Microsoft Azure AI Foundry that uses generative AI to analyze and interpret different types of unstructured content, including documents, images, audio, and video. By applying AI models to this content, the service can generate structured outputs that follow a user-defined schema. These structured outputs make it easier to integrate extracted information into automation, analytics, and search workflows.
+Azure Content Understanding in Foundry Tools is a capability available in Microsoft AI Foundry that uses generative AI to analyze and interpret different types of unstructured content, including documents, images, audio, and video. By applying AI models to this content, the service can generate structured outputs that follow a user-defined schema. These structured outputs make it easier to integrate extracted information into automation, analytics, and search workflows.
 
 One common challenge organizations face is managing large collections of visual content. Images often contain valuable information, but that information can be difficult to search or organize without descriptive metadata. Azure Content Understanding can analyze images and generate structured descriptions that help classify and index visual content, making it easier to locate relevant images and integrate them into search systems.
 
-In this exercise, you'll explore how to create and use an image analyzer in the Microsoft Azure Portal. You'll run the analyzer on sample images and review the generated descriptions that can be used as metadata for indexing and search. By the end of this lab, you'll understand how AI-generated image descriptions can help make visual content more searchable and useful in data-driven applications.
+In this exercise, you'll explore how to create and use an image analyzer in the Content Understanding Studio web interface. You'll run the analyzer on sample images and review the generated descriptions that can be used as metadata for indexing and search. By the end of this lab, you'll understand how AI-generated image descriptions can help make visual content more searchable and useful in data-driven applications.
 
 This exercise will take approximately **30** minutes.
 
@@ -45,13 +45,32 @@ Microsoft Foundry uses projects to organize models, resources, data, and other a
 
     Creating a Foundry project also creates a Foundry resource group in Azure that is linked to your project. This resource group will connect to the Azure Content Understanding service and any other AI services you choose to deploy for use in your Foundry project.
 
-## Deploy required models for Content Understanding
+## Create an Azure storage account
+
+You'll need an Azure storage account for the content assets you're going to analyze using Azure Content Understanding.
+
+1. In a new browser tab, open the [Azure portal](https://portal.azure.com) at `https://portal.azure.com` and browse to the resource group where you created your Foundry project resource.
+
+    The resource group should contain your Foundry resource and the project you created.
+
+1. Create a new **Storage account** resource in the resource group, with the following settings:
+    - **Subscription**: *Your Azure subscription*
+    - **Resource group**: *The resource group containing your Foundry resource*
+    - **Storage account name**: *A unique name for your storage account*
+    - **Region**: *The same region as your Foundry resource*
+    - **Preferred storage type**: Azure Blob Storage or Azure Data Lake Storage Gen 2
+    - **Performance**: Standard
+    - **Redundancy**: Locally-redundant storage (LRS)
+1. Wait for your storage account to be created.
+
+## Create an image analyzer in Azure Content Understanding
 
 Now that you have a Foundry project, you can deploy the AI models needed for content understanding.
 
-1. Navigate to the [Content Understanding settings page](https://contentunderstanding.ai.azure.com/settings) at `https://contentunderstanding.ai.azure.com/settings`.
+1. In a new browser tab, navigate to [Content Understanding Studio](https://contentunderstanding.ai.azure.com/home) at `https://contentunderstanding.ai.azure.com/home` and sign in using your Azure credentials if prompted.
+1. At the top right, select the **Settings** icon to view your account settings for Azure Content Understanding.
 
-1. Select the **Add resource** button.
+1. On the **Setup Azure resource** page, select the **Add resource** button.
 
 1. Select your subscription and the Foundry resources that match your Foundry project name.
 
@@ -61,25 +80,43 @@ Now that you have a Foundry project, you can deploy the AI models needed for con
 
     The deployment process can take several minutes. Once the models are deployed, the resource will appear under **Connected Azure AI Foundry Resources**. Note the name of the resource.
 
-## Try a pre-built image analyzer in the Content Understanding Studio
+1. On the menu bar, select **Build**. Then use the **Create** button to create a new Content Understanding project with the following settings.
+    - **Project name**: *A unique name for your image analysis project*
+    - **Description**: Image analysis project
+    - **Type of project**: Extract content and field with custom schema
+    - **Advanced settings**: Ensure your Foundry resource and storage account are selected, a new container will be created, and a chat completion model such as gpt-4.1 is selected.
+1. When the project has been created, in a new browser tab, download the [lion.jpg](https://microsoftlearning.github.io/mslearn-ai-vision/Labfiles/content-understanding/lion.jpg) image from `https://microsoftlearning.github.io/mslearn-ai-vision/Labfiles/content-understanding/lion.jpg` and save it in a local folder.
 
-1. Select **Home** from the upper-right of the page to navigate to the homepage.
+    Then return to the Content Understanding project, and upload the **lion.jpg** file to the project.
 
-    The **Get started with Content Understanding** page will appear with options to analyze different types of content.
+1.When prompted to choose a template, select **Image Analysis** and ensure the schema is set to **Start from Scratch**. Then save the project.
 
-1. Select **Explore all pre-built analyzers**.
+1. After the image has been uploaded, in the **Schema** pane, use the **Add new field** to add the following fields to the schema:
 
-    A list of pre-built analyzers will appear. These analyzers are designed to extract structured information from different types of content, such as documents, images, audio, and video.
+    | Field Name | Field Descriptopn | Value type | Method |
+    |--|--|--|--|
+    | `Description` | `Image description` | String | Generate |
+    | `Tags` | `Image tags` | List of Strings | Generate |
 
-1. Select **Modality** from the filter options, and then select **Image**.
+1. Save the changes to the schema.
+1. Select **Run analysis** to run the analyzer on the image, and review the fields that are generated; which should include an accurate description and a collection of relevant tags for the image.
+1. When you're satisfied that the analyzer has returned accurate values for the fields, use the **Build analyzer** button to publish an analyzer with a unique name and suitable description.
 
-1. Select **Try it** on the **Image search** analyzer.
+    >**Tip**: You'll need the name later to identify your analyzer in application code.
 
-    Observe the sample image analysis results. The analyzer generates a summary of the image content, identifying objects and concepts in the image. The JSON result is also available. You can also try uploading your own images to see the generated descriptions.
+1. When your analyzer has been built, jump to the analyzer list and verify it's listed there.
+1. Select your analyzer in the list to open it, and then view the **Code Example** tab to see the code necessary to use your analyzer.
+1. Review the Python code example, noting in the **main** function the **endpoint** for your Content Understanding resource; which should look similar to this:
+
+    ```
+   https://{your_foundry_resource}.services.ai.azure.com/
+    ```
+
+1. Under the code example, note that your **resource key** is available. You can use this in a client application to authenticate a connection to the endpoint.
 
 ## Create an image analyzer application
 
-Now that you've explored the playground, let's build a Python application that programmatically analyzes images using the Content Understanding analyzers.
+Now that you've created an analyzer, let's build a Python application that uses it to analyzes images.
 
 ### Get application files from GitHub
 
@@ -104,11 +141,11 @@ The initial application files you'll need to develop the translation application
 1. In the VS Code Explorer pane, review the files in the folder:
 
     - `.env` - A configuration file for application settings.
-    - `image-app.py` - The Python code file for the image analyzer application.
+    - `analyze-image.py` - The Python code file for the image analyzer application.
     - `requirements.txt` - A file listing the package dependencies.
     - `images` - A folder containing images for analysis.
 
-1. In the **Explorer** pane, in the **python** folder, select the **.env** file to open it. Then update the endpoint value to match the endpoint for your Foundry resource.
+1. In the **Explorer** pane, in the **python** folder, select the **.env** file to open it. Then update it with the  **endpoint** value for your resource endpoint (copied from the code example in Content Understanding Studio), your **key** (copied from Content Understanding Studio), and the name of your analyzer.
 
     > **Important**:Be sure to add the `https://{YOUR-RESOURCE-NAME}.services.ai.azure.com` Foundry resource endpoint, <u>not</u> the project endpoint or Azure OpenAI endpoint!
 
@@ -129,100 +166,80 @@ The initial application files you'll need to develop the translation application
 
 > **Tip**: As you add code, be sure to maintain the correct indentation.
 
-1. In VS Code, open the `image-app.py` file.
+1. In VS Code, open the `analyze-image.py` file.
 
 1. Find the comment **Add references** and add the following code for the necessary imports:
 
     ```python
    # Add references
-   import requests
-   import time
+   from azure.ai.contentunderstanding import ContentUnderstandingClient
+   from azure.ai.contentunderstanding.models import AnalysisInput, AnalysisResult
+   from azure.core.credentials import AzureKeyCredential
+   from azure.core.exceptions import AzureError
    from azure.identity import DefaultAzureCredential
     ```
 
-1. Find the comment **Get an access token for the Azure Cognitive Services resource** and add the following code:
+1. In the **main** function, note that code to get the configuration values from your environment file has been provided.
+1. Find the comment **Set up Content Understanding client** and add the following code:
 
     ```python
-   # Get an access token for the Azure Cognitive Services resource
-   credential = DefaultAzureCredential()
-   token = credential.get_token("https://cognitiveservices.azure.com/.default")
-   analyzer_url = f"{endpoint}/contentunderstanding/analyzers/prebuilt-imageSearch:analyze?api-version=2025-11-01"
-   headers = {
-       "Authorization": f"Bearer {token.token}",
-       "Content-Type": "application/json"
-   }
+   # Set up Content Understanding client
+   credential = AzureKeyCredential(key) if key else DefaultAzureCredential()
+   client = ContentUnderstandingClient(
+        endpoint=endpoint,
+        credential=credential,
+        api_version=api_version)
     ```
 
-1. Find the comment **Send the image to the analyzer and get the initial response** and add the following code:
+1. Note that code for the user to input a file number or quit the program has been provided.
+1. Find the comment **Analyze the file** and add the following code:
 
     ```python
-   # Send the image to the analyzer and get the initial response
-   payload = {
-       "inputs": [
-           {"url": image_url}
-       ]
-   }
-   response = requests.post(analyzer_url, headers=headers, json=payload)
-   print(f"Status Code: {response.status_code}")
-   result = response.json()
+   # Analyze the file
+   try:
+        poller = client.begin_analyze(
+            analyzer_id=analyzer_id,
+            inputs=[AnalysisInput(data=file_bytes)],
+        )
+        result: AnalysisResult = poller.result()
+   except AzureError as err:
+        print(f"[Azure Error]: {err.message}")
+        sys.exit(1)
+   except Exception as ex:
+        print(f"[Unexpected Error]: {ex}")
+        sys.exit(1)
+
+   for field in result.contents[0].fields:
+        if field == "Description":
+            print(f"{field}:\n{result.contents[0].fields[field].value_string}\n")
+        elif field == "Tags":
+            print(f"{field}:")
+            for tag in result.contents[0].fields[field].value_array:
+                print("  -", tag.value_string)
     ```
 
-1. Find the comment **Check the status of the analysis and poll if it's still running** and add the following code:
-
-    ```python
-   # Check the status of the analysis and poll if it's still running
-   if result.get("status") in ("Running", "NotStarted"):
-       request_id = result.get("id")
-       results_url = f"{endpoint}/contentunderstanding/analyzerResults/{request_id}?api-version=2025-11-01"
-       
-       # Poll until complete
-       while result.get("status") not in ("Succeeded", "Failed"):
-           time.sleep(2)
-           poll_response = requests.get(results_url, headers=headers)
-           result = poll_response.json()
-           print(f"Status: {result.get('status')}")
-    ```
+    This code submits the selected file data to your analyuzer, polls for the results, and then displays the *Description* and *Tags* values that are returned.
 
 1. Save the file (**Ctrl+S**).
 
-### Sign into Azure and run the app
+### Test the app
 
-1. In the VS Code terminal, sign into Azure:
+> **Tip**: The application has been designed to use key-based authentication. However, if you prefer, you can use Microsoft Entra ID authentication by setting the key to null (or just removing the variable) and using `az login` to sign into Azure before running the app.
 
-    ```
-    az login
-    ```
-
-    **<font color="red">You must sign into Azure to authenticate with your Azure OpenAI resource.</font>**
-
-    > **Note**: In most scenarios, just using *az login* will be sufficient. However, if you have subscriptions in multiple tenants, you may need to specify the tenant by using the *--tenant* parameter.
-
-1. When prompted, follow the instructions to open the sign-in page in a new tab and enter the authentication code provided and your Azure credentials.
-
-1. After you have signed in, run the application:
+1. In the VS Code terminal, run the application:
 
     ```
-    python image-app.py
+    python analyze-image.py
     ```
 
-1. Observe the output, which should be similar to the following:
+1. When prompted, enter a number that corresponds to one of these images:
 
-    ```output
-    ==================================================
-    Image Analysis Summaries:
-    ==================================================
+    |![A giraffe.](../../Labfiles/content-understanding/python/images/image1.jpg) | ![An elephant.](../../Labfiles/content-understanding/python/images/image2.jpg) | ![A lion.](../../Labfiles/content-understanding/python/images/image3.jpg)
+    |--|--|--|
+    | 1 | 2 | 3 |
 
-    Image 1 Summary:
-    The image shows a single apple placed on a light-colored fabric surface. The apple has a mix of red and greenish-yellow hues with some natural blemishes and a slightly irregular shape. The background is plain and out of focus, highlighting the apple as the main subject.
-
-    Image 2 Summary:
-    The image shows a single ripe banana placed on a white textured surface. The banana is mostly yellow with some brown spots and a greenish stem, indicating it is fresh and ready to eat.
-
-    Image 3 Summary:
-    The image is a 3D pie chart showing the distribution of hours in four categories. The largest segment is '60+ hours' at 37.8%, followed closely by '50-60 hours' at 36.6%. The '40-50 hours' category accounts for 18.9%, and the smallest segment is '1-39 hours' at 6.7%.
-    ```
-
-    Image analysis typically takes a few seconds. Notice that the descriptions include details about the objects in the images, including text, numbers, and other visual features. These detailed descriptions can help make the images more searchable and easier to organize in a content management system or search index.
+1. Observe the output, which should include a description of the selected image and a collection of appropriate tags.
+1. When you're finished, enter any value other than 1, 2, or 3 to exit.
 
 ## Summary
 
