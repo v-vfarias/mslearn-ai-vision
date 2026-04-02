@@ -6,9 +6,9 @@ lab:
 ---
 
 # Generate images with AI (deprecated)
-
+<!--
 > **Note**: This exercise is deprecated. Consider reviewing the replacement exercise at <https://microsoftlearning.github.io/mslearn-ai-vision/Instructions/Exercises/02-generate-image.html>.
-
+-->
 In this exercise, you use an image generation model to generate images. You also use the OpenAI Python SDK to create a simple app to generate images based on your prompts.
 
 > **Note**: This exercise is based on pre-release SDK software, which may be subject to change. Where necessary, we've used specific versions of packages; which may not reflect the latest available versions. You may experience some unexpected behavior, warnings, or errors.

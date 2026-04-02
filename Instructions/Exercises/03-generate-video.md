@@ -53,7 +53,7 @@ Microsoft Foundry uses projects to organize models, resources, data, and other a
     - **Region**: Select any available region
 
 1. Select **Create**. Wait for your project to be created.
-1. On the home page for your project, note the project endpoint, key, and OpenAI endpoint.
+1. On the home page for your project, note that the API key, project endpoint, and OpenAI endpoint are displayed here.
 
     > **TIP**: You're going to need the Azure OpenAI endpoint later!
 
@@ -61,7 +61,7 @@ Microsoft Foundry uses projects to organize models, resources, data, and other a
 
 You'll need a model that can process image-based input.
 
-1. On the project home page, in the **Start building** menu, select **Browse models** to view the Microsoft Foundry model catalog.
+1. Now you're ready to **Start building**. Select **Find models** (or on the **Discover** page, select the **Models** tab) to view the Microsoft Foundry model catalog.
 
 1. Search for and deploy the `Sora-2` model using the default settings. Deployment may take a minute or so.
 
@@ -265,19 +265,16 @@ The initial application files you'll need to develop the translation application
 
 ### Sign into Azure and run the app
 
-1. In the VS Code terminal, sign into Azure:
+1. In the terminal pane, use the following command to sign into Azure.
 
-    ```
+    ```powershell
     az login
     ```
 
-    **<font color="red">You must sign into Azure to authenticate with your Azure OpenAI resource.</font>**
+    > **Note**: In most scenarios, just using *az login* will be sufficient. However, if you have subscriptions in multiple tenants, you may need to specify the tenant by using the *--tenant* parameter. See [Sign into Azure interactively using the Azure CLI](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively) for details.
 
-    > **Note**: In most scenarios, just using *az login* will be sufficient. However, if you have subscriptions in multiple tenants, you may need to specify the tenant by using the *--tenant* parameter.
-
-1. When prompted, follow the instructions to open the sign-in page in a new tab and enter the authentication code provided and your Azure credentials.
-
-1. After you have signed in, run the application:
+1. When prompted, follow the instructions to sign into Azure. Then complete the sign in process in the command line, viewing (and confirming if necessary) the details of the subscription containing your Foundry resource.
+1. After you have signed in, enter the following command to run the application:
 
     ```
     python video-app.py

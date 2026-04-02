@@ -6,9 +6,9 @@ lab:
 ---
 
 # Develop a vision-enabled chat app (deprecated)
-
+<!--
 > **Note**: This exercise is deprecated. Consider reviewing the replacement exercise at <https://microsoftlearning.github.io/mslearn-ai-vision/Instructions/Exercises/01-gen-ai-vision.html>.
-
+-->
 In this exercise, you use the *Phi-4-multimodal-instruct* generative AI model to generate responses to prompts that include images. You'll develop an app that provides AI assistance with fresh produce in a grocery store by using Azure AI Foundry and the Azure AI Model Inference service.
 
 > **Note**: This exercise is based on pre-release SDK software, which may be subject to change. Where necessary, we've used specific versions of packages; which may not reflect the latest available versions. You may experience some unexpected behavior, warnings, or errors.
