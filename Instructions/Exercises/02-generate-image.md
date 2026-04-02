@@ -167,7 +167,7 @@ The initial application files you'll need to develop the translation application
         n=1
     )
 
-   json_response = json.loads(result.model_dump_json())
+   json_response = json.loads(img.model_dump_json())
    image_data = json_response["data"][0].get("b64_json")
    image_data_in_bytes = base64.b64decode(image_data)
     ```
