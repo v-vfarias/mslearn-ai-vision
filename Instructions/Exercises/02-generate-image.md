@@ -53,17 +53,17 @@ You'll need a model that can generate images.
 
 1. On the project home page, in the **Start building** menu, select **Find models** to view the Microsoft Foundry model catalog.
 
-1. Search for and deploy the `FLUX.1-Kontext-pro` model using the default settings. Deployment may take a minute or so.
+1. Search for and deploy the `gpt-image-2` model using the default settings. Deployment may take a minute or so.
 
     After the model is deployed, the playground for the model is displayed.
 
-    > **TIP**: Note the model deployment name (which by default should be *FLUX.1-Kontext-pro*) - you'll need this later!
+    > **TIP**: Note the model deployment name (which by default should be *gpt-image-2*) - you'll need this later!
 
 ## Test the model in the playground
 
-Before creating a client application, let's test the Flux model in the playground.
+Before creating a client application, let's test the gpt-image model in the playground.
 
-1. In the playground, e your Flux model deployment is selected. Then, in the box near the bottom of the page, select the smallest available size and enter a prompt such as `A robot eating spaghetti`.
+1. In the playground, ensure your gpt-image model deployment is selected. Then, in the box near the bottom of the page, select the smallest available size and enter a prompt such as `A robot eating spaghetti`.
 
 1. Review the resulting image in the playground:
 
@@ -172,10 +172,9 @@ The initial application files you'll need to develop the translation application
    image_data_in_bytes = base64.b64decode(image_data)
     ```
 
-    > **Note**: The FLUX model returns the generated image as base64-encoded data in `b64_json`.
+    > **Note**: The gpt-image model returns the generated image as base64-encoded data in `b64_json`.
 
 1. Note that the code in the remainder of the **main** function passes the image data and a filename to a provided function, which decodes and saves the generated image as a .png file.
-    > **Note**: The FLUX model returns the generated image as base64-encoded data in `b64_json`.
 
 1. Note that the code in the remainder of the **main** function passes the image data and a filename to a provided function, which decodes and saves the generated image as a .png file.
 
@@ -210,11 +209,11 @@ The initial application files you'll need to develop the translation application
 
 ## Summary
 
-In this exercise, you used Microsoft Foundry and the Azure OpenAI SDK to create a client application uses a Flux model to generate images.
+In this exercise, you used Microsoft Foundry and the Azure OpenAI SDK to create a client application uses a gpt-image model to generate images.
 
 ## Clean up
 
-If you've finished exploring Flux, you should delete the resources you have created in this exercise to avoid incurring unnecessary Azure costs.
+If you've finished exploring image generation, you should delete the resources you have created in this exercise to avoid incurring unnecessary Azure costs.
 
 1. Return to the browser tab containing the Azure portal (or re-open the [Azure portal](https://portal.azure.com) at `https://portal.azure.com` in a new browser tab) and view the contents of the resource group where you deployed the resources used in this exercise.
 1. On the toolbar, select **Delete resource group**.
